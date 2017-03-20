@@ -1,0 +1,21 @@
+FROM php:7-fpm
+
+RUN apt-get update && apt-get install -y libmcrypt-dev postgresql-client \
+    && docker-php-ext-install mcrypt
+
+# Install Postgre PDO
+RUN apt-get install -y libpq-dev \
+    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
+    && docker-php-ext-install pdo pdo_pgsql pgsql
+
+# replace ini file with one that has verbose error messages
+# TODO I would love to do this some other way
+ADD ./php.ini /usr/local/etc/php/php.ini
+
+WORKDIR /var/www
+
+# In order for laravel to function properly it needs to be able to write to the
+# bootstrap/cache and storage directories. This requires me to run `chmod -R
+# 0777 .` in these directories on my host machine. I'd like to come up with a
+# better solution for this issue... Also, I'm curious what issues there are like
+# this on a real server.

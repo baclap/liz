@@ -1,0 +1,11 @@
+---
+# Ubuntu has python3 by default, ansible requires 2, so start by installing 2.
+# This requires the use of "gather_facts: no" which can break other roles. This
+# is why this is separated into a different playbook.
+- hosts: all
+  sudo: yes
+  remote_user: root
+  gather_facts: no
+  pre_tasks:
+    - name: 'install python2'
+      raw: sudo apt-get -y install python-simplejson

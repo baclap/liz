@@ -1,0 +1,33 @@
+---
+# This is the playbook which does the real work. It gives us docker,
+# docker-compose, php7, and composer.
+- hosts: all
+  vars:
+    php_packages:
+      - php7.0-common
+      - php7.0-cli
+      - php7.0-intl
+      - php7.0-curl
+      - php7.0-cgi
+      - php7.0-fpm
+      - php7.0-pgsql
+      - php7.0-gd
+      - php7.0-mcrypt
+      - php7.0-mbstring
+      - php7.0-xml
+  sudo: yes
+  remote_user: root
+  roles:
+    - itconsultis.provision-debian-docker
+    # itcraftsmanpl.php7 and ansible-role-php7 are the same role but the latter is a
+# newer version that is not what ansible-galaxy downloads by default. It
+# includes the php7.0-mbstring package so I had to go out and get this role by
+# specifically downloading it from github rather than the default ansible-galaxy
+# means.
+# TODO this finally worked but do I need the local role or can I go back to the other??? I think maybe the vars above is all that's needed?
+# also add zip/unzip role https://galaxy.ansible.com/RealSalmon/zip/
+    # - itcraftsmanpl.php7
+    - ansible-role-php7
+    - tschifftner.composer
+
+# TODO: add requirements.yml to ensure roles are downloaded prior to running playbook
